@@ -96,10 +96,10 @@ export const CELL02 = {
    이미지 82.7 x 82.3pt, 캐릭터 39 x 46pt, 말풍선 x 40~82.7 / y 39~82.3pt */
 export const CELL_CSS = {
   //            capLeft  capTop        top  left  bottom right
-  receive01: { cap: '68px 47px', insets: '49px 69px 10px 13px' },  // 꼬리(왼쪽) 안쪽 여백 14pt
-  send01:    { cap: '20px 47px', insets: '49px 13px 10px 69px' },  // 꼬리(오른쪽) 안쪽 여백 14pt
-  receive02: { cap: '68px 18px', insets: '8px 69px 8px 13px' },
-  send02:    { cap: '15px 18px', insets: '8px 13px 8px 69px' },
+  receive01: { cap: '68px 47px', insets: '48px 69px 9px 13px' },  // 꼬리(왼쪽) 안쪽 여백 14pt
+  send01:    { cap: '20px 47px', insets: '48px 13px 9px 69px' },  // 꼬리(오른쪽) 안쪽 여백 14pt
+  receive02: { cap: '68px 18px', insets: '7px 69px 7px 13px' },
+  send02:    { cap: '15px 18px', insets: '7px 13px 7px 69px' },
 };
 
 /** 말풍선 원본 (public/bubbles/, 투명 배경 그대로) */
