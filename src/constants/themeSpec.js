@@ -75,19 +75,18 @@ export const BG_SLOTS = [
      대칭이 아니다. (앞선 버전이 대칭이라 판단한 게 오류)
    캐릭터는 118 x 138px (39x46pt), 말풍선과 겹치지 않게 떨어뜨린다. */
 export const CELL01 = {
-  w: 296, h: 247,
+  w: 290, h: 247,
   char: { w: 118, h: 138 },                   // 39 x 46pt
   charPad: 16,                                // 화면 가장자리 ↔ 캐릭터 여백 (@3x px)
-  bubble: { w: 128, h: 130, y: 117, x: 168 }, // 캐릭터(24~142px)와 가로 26px 띄움
+  bubble: { w: 128, h: 130, y: 117, x: 162 }, // 캐릭터(24~142px)와 가로 26px 띄움
 };
 export const CELL02 = {
-  w: 296, h: 113,
+  w: 290, h: 113,
   char: null,
-  bubble: { w: 128, h: 113, y: 0, x: 168 },   // 01 과 같은 x 오프셋 → 정렬 일치
+  bubble: { w: 128, h: 113, y: 0, x: 162 },   // 01 과 같은 x 오프셋 → 정렬 일치
 };
 
 /* ★ 두 숫자의 순서는 (capLeft, capTop) 이다. (capTop, capLeft) 가 아니다! ★
-   락쿠마 Send01 이 '20px 60px' 인 걸 역산해서 확인:
      20 = 왼쪽 고정(말풍선 안), 60 = 위쪽 고정(캐릭터 전체를 덮음)
    순서를 반대로 넣으면 늘어나는 기준선이 캐릭터를 관통해서
    답장처럼 큰 말풍선에서 캐릭터가 늘어난다.
@@ -96,9 +95,9 @@ export const CELL02 = {
    이미지 82.7 x 82.3pt, 캐릭터 39 x 46pt, 말풍선 x 40~82.7 / y 39~82.3pt */
 export const CELL_CSS = {
   //            capLeft  capTop        top  left  bottom right
-  receive01: { cap: '68px 47px', insets: '48px 69px 9px 13px' },  // 꼬리(왼쪽) 안쪽 여백 14pt
+  receive01: { cap: '64px 47px', insets: '48px 69px 9px 13px' },  // 꼬리(왼쪽) 안쪽 여백 14pt
   send01:    { cap: '20px 47px', insets: '48px 13px 9px 69px' },  // 꼬리(오른쪽) 안쪽 여백 14pt
-  receive02: { cap: '68px 18px', insets: '7px 69px 7px 13px' },
+  receive02: { cap: '64px 18px', insets: '7px 69px 7px 13px' },
   send02:    { cap: '15px 18px', insets: '7px 13px 7px 69px' },
 };
 
