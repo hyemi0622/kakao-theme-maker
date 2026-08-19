@@ -61,15 +61,15 @@ export const BG_SLOTS = [
      간격 = bubble.x - (charPad + char.w) = 144 - (16 + 118) = 10px
      send 쪽은 좌우 반전이라 자동으로 같은 10px 이 적용된다. */
 export const CELL01 = {
-  w: 294, h: 257,
+  w: 287, h: 257,
   char: { w: 118, h: 138 },
   charPad: 16,
-  bubble: { w: 150, h: 140, y: 117, x: 144 },
+  bubble: { w: 143, h: 140, y: 117, x: 144 },
 };
 export const CELL02 = {
-  w: 294, h: 140,
+  w: 287, h: 140,
   char: null,
-  bubble: { w: 150, h: 140, y: 0, x: 144 },   // 01 과 완전히 같은 크기 → 화질 일치
+  bubble: { w: 143, h: 140, y: 0, x: 144 },
 };
 
 /* 순서는 (capLeft, capTop). insets 는 top left bottom right. 전부 1배수 pt */
