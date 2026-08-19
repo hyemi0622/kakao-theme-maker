@@ -1,15 +1,6 @@
 /**
  * themeSpec.js
  * ─────────────────────────────────────────────────────────────
- * ★ 실제로 작동하는 테마(동물의숲©말랑.ktheme)를 뜯어서 만든 정확한 규격 ★
- *
- * 확인된 사실
- *  1. 이미지는 전부 @3x 한 벌만 넣는다. (@2x 는 아예 없어도 정상 동작)
- *     예외: commonIcoTheme.png 만 배수 접미사 없이 162x162.
- *  2. 파일이 몇 개 빠져 있어도 테마는 정상 적용된다.
- *     (실제 작동 테마도 findBtnAddFriend.png 가 없는 채로 동작 중)
- *  3. zip 루트에 KakaoTalkTheme.css + Images/ 폴더.
- */
 
 /** 실제 테마는 @3x 만 넣는다 */
 export const SCALE_SUFFIX = '@3x';
@@ -55,8 +46,7 @@ export const FLAT_SLOTS = [
   { name: 'commonIcoTheme', px: 162, from: 'B', fit: 0.86 },
 ];
 
-/** 배경 이미지 — 실제 테마 실측값
- *  별 패턴은 '채팅방'에만. 친구탭/채팅목록/탭바/잠금화면은 깨끗한 흰색. */
+/** 배경 이미지 — 실제 테마 실측값 **/
 export const BG_SLOTS = [
   { name: 'chatroomBgImage', w: 1125, h: 2250, stars: true },
   { name: 'mainBgImage', w: 1125, h: 2250 },
@@ -76,16 +66,10 @@ export const BG_SLOTS = [
  * 캐릭터가 안 늘어나고 말풍선만 커진다.  단위는 1배수 pt.
  */
 
-/* ★★ 말풍선 규격 — 실제 작동 테마(부리부리락쿠마 2)를 실측해서 그대로 따름 ★★
-   Receive01 248x247 / cap '62px 62px' / insets '50px 50px 11px 12px'
-   Receive02 248x113 / 말풍선은 x=122 부터 (01 과 좌측 정렬 일치)
-   → cap 은 '왼쪽·위쪽만' 고정하고 오른쪽·아래쪽은 (전체 - cap - 1) 로 자동.
-     대칭이 아니다. (앞선 버전이 대칭이라 판단한 게 오류)
-   캐릭터는 118 x 138px (39x46pt), 말풍선과 겹치지 않게 떨어뜨린다. */
 export const CELL01 = {
   w: 248, h: 247,
   char: { w: 118, h: 138 },                   // 39 x 46pt
-  charPad: 14,                                // 화면 가장자리와 캐릭터 사이 여백 (@3x px)
+  charPad: 18,                                // 화면 가장자리와 캐릭터 사이 여백 (@3x px)
   bubble: { w: 128, h: 130, y: 117, x: 120 }, // 말풍선 43 x 43pt
 };
 export const CELL02 = {
@@ -95,7 +79,6 @@ export const CELL02 = {
 };
 
 /* ★ 두 숫자의 순서는 (capLeft, capTop) 이다. (capTop, capLeft) 가 아니다! ★
-   락쿠마 Send01 이 '20px 60px' 인 걸 역산해서 확인:
      20 = 왼쪽 고정(말풍선 안), 60 = 위쪽 고정(캐릭터 전체를 덮음)
    순서를 반대로 넣으면 늘어나는 기준선이 캐릭터를 관통해서
    답장처럼 큰 말풍선에서 캐릭터가 늘어난다.
