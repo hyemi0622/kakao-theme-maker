@@ -2,12 +2,6 @@
 
 백엔드 없이 브라우저에서 누끼 → 리사이즈 → JSZip → `.ktheme` 까지 끝냅니다.
 
-```bash
-npm install
-npm run dev      # http://localhost:5173
-npm run build    # dist/ 를 Vercel·Netlify·GitHub Pages 에 그대로 올리면 끝
-```
-
 ## 폴더 구조
 
 ```
@@ -15,7 +9,7 @@ kakao-theme-maker/
 ├── index.html
 ├── vite.config.js
 ├── public/
-│   └── bubbles/                      ← 내가 만든 말풍선 PNG 를 여기 넣기
+│   └── bubbles/                      
 │       ├── chatroomBubbleReceive01@2x.png / @3x.png
 │       ├── chatroomBubbleReceive01Selected@2x.png / @3x.png
 │       ├── chatroomBubbleSend01@2x.png / @3x.png
@@ -59,46 +53,6 @@ kakao-theme-maker/
 모든 치수를 `rem` 으로 씁니다. 시안(402pt = 아이폰 16/17 Pro) 비율이
 아이폰 8(375pt) ~ 17 Pro Max(440pt) 에서 그대로 유지됩니다.
 세로는 flow 레이아웃이라 아이폰 8 처럼 짧은 화면에서도 안 잘립니다.
-
-## 테마 이미지 배수
-
-`profileImg01~03.png`, `commonIcoTheme.png` 만 **162×162 단일 파일**,
-나머지는 전부 `@2x`(아이폰 8·SE) + `@3x`(Pro/Max) 두 벌을 자동 생성합니다.
-
-## GitHub Pages 배포 (사진만 넣으면 바로 되는 링크 만들기)
-
-1. GitHub 에 새 repo 생성 후 이 폴더를 push
-   ```bash
-   git init && git add -A && git commit -m "init"
-   git branch -M main
-   git remote add origin https://github.com/<아이디>/<레포>.git
-   git push -u origin main
-   ```
-2. repo → **Settings → Pages → Build and deployment → Source** 를 **GitHub Actions** 로 변경
-3. 끝. `main` 에 push 할 때마다 `.github/workflows/deploy.yml` 이 자동 배포합니다.
-   주소: `https://<아이디>.github.io/<레포>/`
-
-`vite.config.js` 의 `base: './'` 덕분에 repo 이름이 뭐든 경로가 안 깨집니다.
-
-> 누끼 AI 모델(약 24MB)은 첫 실행 때 CDN 에서 1회 받고 브라우저에 캐시됩니다.
-> GitHub Pages 는 COOP/COEP 헤더를 못 켜서 멀티스레드 대신 싱글스레드로 도는데,
-> 사진 2장이라 체감 차이는 몇 초 수준입니다.
-
-## 말풍선
-
-`public/bubbles/` 에 아래 이름으로 넣으면 그걸 쓰고, **없으면 같은 손그림 스타일로 자동 생성**됩니다.
-
-```
-chatroomBubbleReceive01@2x.png / @3x.png
-chatroomBubbleReceive01Selected@2x.png / @3x.png
-chatroomBubbleSend01@2x.png / @3x.png
-chatroomBubbleSend01Selected@2x.png / @3x.png
-```
-
-**크기는 고정 1장만 있으면 됩니다.** 글자가 길어지면 카카오가 CSS 의
-`-ios-background-image: '파일.png' 24px 24px;` 값(capInset)을 기준으로
-가운데만 늘려주기 때문에 모서리는 절대 안 뭉개집니다.
-숫자는 `src/constants/themeSpec.js` 의 `CAP` 에서 한 번에 바꿉니다.
 
 ## 폰트
 
