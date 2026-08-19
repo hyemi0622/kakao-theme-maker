@@ -75,10 +75,10 @@ export const CELL02 = {
 /* 순서는 (capLeft, capTop). insets 는 top left bottom right. 전부 1배수 pt */
 export const CELL_CSS = {
   //            capLeft  capTop        top  left  bottom right
-  receive01: { cap: '58px 50px', insets: '48px 60px 10px 9px' },
-  send01:    { cap: '18px 50px', insets: '48px 9px 10px 60px' },
-  receive02: { cap: '58px 16px', insets: '10px 60px 10px 9px' },
-  send02:    { cap: '12px 16px', insets: '10px 9px 10px 60px' },
+  receive01: { cap: '58px 50px', insets: '48px 55px 10px 11px' },
+  send01:    { cap: '18px 50px', insets: '48px 11px 10px 55px' },
+  receive02: { cap: '58px 16px', insets: '10px 55px 10px 11px' },
+  send02:    { cap: '12px 16px', insets: '10px 11px 10px 55px' },
 };
 
 export const BUBBLE_ART = {
