@@ -68,22 +68,22 @@ export const BG_SLOTS = [
  * 캐릭터가 안 늘어나고 말풍선만 커진다.  단위는 1배수 pt.
  */
 
-/* ★★ 말풍선 규격 ★★
+/* ★★ 말풍선 규격 — 
    Receive01 248x247 / cap '62px 62px' / insets '50px 50px 11px 12px'
    Receive02 248x113 / 말풍선은 x=122 부터 (01 과 좌측 정렬 일치)
    → cap 은 '왼쪽·위쪽만' 고정하고 오른쪽·아래쪽은 (전체 - cap - 1) 로 자동.
      대칭이 아니다. (앞선 버전이 대칭이라 판단한 게 오류)
    캐릭터는 118 x 138px (39x46pt), 말풍선과 겹치지 않게 떨어뜨린다. */
 export const CELL01 = {
-  w: 278, h: 247,
+  w: 296, h: 247,
   char: { w: 118, h: 138 },                   // 39 x 46pt
-  charPad: 14,                                // 화면 가장자리와 캐릭터 사이 여백 (@3x px)
-  bubble: { w: 128, h: 130, y: 117, x: 150 }, // x 150 → 캐릭터(~132)와 가로로 18px 띄움
+  charPad: 16,                                // 화면 가장자리 ↔ 캐릭터 여백 (@3x px)
+  bubble: { w: 128, h: 130, y: 117, x: 168 }, // 캐릭터(24~142px)와 가로 26px 띄움
 };
 export const CELL02 = {
-  w: 278, h: 113,
+  w: 296, h: 113,
   char: null,
-  bubble: { w: 128, h: 113, y: 0, x: 150 },   // 01 과 같은 x 오프셋 → 정렬 일치
+  bubble: { w: 128, h: 113, y: 0, x: 168 },   // 01 과 같은 x 오프셋 → 정렬 일치
 };
 
 /* ★ 두 숫자의 순서는 (capLeft, capTop) 이다. (capTop, capLeft) 가 아니다! ★
@@ -96,10 +96,10 @@ export const CELL02 = {
    이미지 82.7 x 82.3pt, 캐릭터 39 x 46pt, 말풍선 x 40~82.7 / y 39~82.3pt */
 export const CELL_CSS = {
   //            capLeft  capTop        top  left  bottom right
-  receive01: { cap: '62px 47px', insets: '50px 56px 11px 14px' },  // 꼬리(왼쪽) 여백 ↑
-  send01:    { cap: '20px 47px', insets: '50px 14px 11px 56px' },  // 꼬리(오른쪽) 여백 ↑
-  receive02: { cap: '62px 18px', insets: '9px 56px 9px 14px' },
-  send02:    { cap: '15px 18px', insets: '9px 14px 9px 56px' },
+  receive01: { cap: '68px 47px', insets: '49px 69px 10px 13px' },  // 꼬리(왼쪽) 안쪽 여백 14pt
+  send01:    { cap: '20px 47px', insets: '49px 13px 10px 69px' },  // 꼬리(오른쪽) 안쪽 여백 14pt
+  receive02: { cap: '68px 18px', insets: '8px 69px 8px 13px' },
+  send02:    { cap: '15px 18px', insets: '8px 13px 8px 69px' },
 };
 
 /** 말풍선 원본 (public/bubbles/, 투명 배경 그대로) */
