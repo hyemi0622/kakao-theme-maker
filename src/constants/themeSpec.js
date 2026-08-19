@@ -75,8 +75,8 @@ export const CELL02 = {
 /* 순서는 (capLeft, capTop). insets 는 top left bottom right. 전부 1배수 pt */
 export const CELL_CSS = {
   //            capLeft  capTop        top  left  bottom right
-  receive01: { cap: '60px 45px', insets: '50px 65px 11px 11px' },  // 왼쪽(꼬리) 여백 ↑
-  send01:    { cap: '18px 45px', insets: '50px 11px 11px 65px' },  // 오른쪽(꼬리) 여백 ↑
+  receive01: { cap: '60px 50px', insets: '50px 65px 11px 11px' },  // 45 → 50
+  send01:    { cap: '18px 50px', insets: '50px 11px 11px 65px' },  // 45 → 50
   receive02: { cap: '60px 16px', insets: '10px 59px 10px 11px' },
   send02:    { cap: '12px 16px', insets: '10px 11px 10px 59px' },
 };
