@@ -6,13 +6,8 @@
 /** 실제 테마는 @3x 만 넣는다 */
 export const SCALE_SUFFIX = '@3x';
 
-/**
- * 슬롯 정의 — 실제 작동 테마에서 실측한 픽셀 그대로
- *  from: 'A'(왼쪽/상대방) | 'B'(오른쪽/나) | 'deco:종류'
- */
 export const SLOTS = [
-  /* 암호 입력 화면 — 132x132
-     입력 전 = A(상대방), 입력 후(Selected) = B(나) */
+  /* 암호 입력 화면 — 132x132 */
   { name: 'passcodeImgCode01', px: 132, from: 'A', fit: 0.94 },
   { name: 'passcodeImgCode02', px: 132, from: 'A', fit: 0.94 },
   { name: 'passcodeImgCode03', px: 132, from: 'A', fit: 0.94 },
@@ -42,13 +37,10 @@ export const SLOTS = [
   { name: 'maintabIcoMoreSelected', px: 114, from: 'deco:burst-black', fit: 0.86 },
 ];
 
-/** 배수 접미사 없이 딱 1장만 들어가는 파일 */
 export const FLAT_SLOTS = [
   { name: 'commonIcoTheme', px: 162, from: 'B', fit: 0.86 },
 ];
 
-/** 배경 이미지 — 실제 테마 실측값
- *  별 패턴은 '채팅방'에만. 친구탭/채팅목록/탭바/잠금화면은 깨끗한 흰색. */
 export const BG_SLOTS = [
   { name: 'chatroomBgImage', w: 1125, h: 2250, stars: true },
   { name: 'mainBgImage', w: 1125, h: 2250 },
@@ -56,64 +48,45 @@ export const BG_SLOTS = [
   { name: 'maintabBgImage', w: 1410, h: 147 },
 ];
 
-/**
- * 말풍선 셀 (캐릭터 + 말풍선 합성)
- * ─────────────────────────────────────────────────────────────
- * 모든 수치는 @3x 픽셀. (1배수 pt = ÷3)
- *
- * 01 = 첫 메시지 → 캐릭터 포함
- * 02 = 연속 메시지 → 말풍선만 (캐릭터 없이 같은 위치에 정렬)
- *
- * capTop / capLeft 는 '캐릭터 밖 + 말풍선 몸통 안' 지점이어야
- * 캐릭터가 안 늘어나고 말풍선만 커진다.  단위는 1배수 pt.
- */
+/* ★★ 말풍선 규격 ★★
+   [픽셀 깨짐 해결]
+     말풍선 원본이 꼬리O = 156x140, 꼬리X = 143x140 로 서로 다르다.
+     목표 크기를 150x140 으로 잡으면
+       꼬리O 156→150 (4% 축소) / 꼬리X 143→150 (5% 확대)
+     둘 다 리샘플링이 거의 없어서 선 굵기와 화질이 똑같아진다.
+     세로는 140 = 원본 그대로라 세로 방향 깨짐이 아예 없다.
+     (이전엔 01=130 / 02=113 으로 축소율이 달라서 02 만 얇고 뭉개졌다)
 
-/* ★★ 말풍선 규격 — 
-   Receive01 248x247 / cap '62px 62px' / insets '50px 50px 11px 12px'
-   Receive02 248x113 / 말풍선은 x=122 부터 (01 과 좌측 정렬 일치)
-   → cap 은 '왼쪽·위쪽만' 고정하고 오른쪽·아래쪽은 (전체 - cap - 1) 로 자동.
-     대칭이 아니다. (앞선 버전이 대칭이라 판단한 게 오류)
-   캐릭터는 118 x 138px (39x46pt), 말풍선과 겹치지 않게 떨어뜨린다. */
+   [캐릭터-말풍선 간격]
+     간격 = bubble.x - (charPad + char.w) = 144 - (16 + 118) = 10px
+     send 쪽은 좌우 반전이라 자동으로 같은 10px 이 적용된다. */
 export const CELL01 = {
-  w: 290, h: 247,
-  char: { w: 118, h: 138 },                   // 39 x 46pt
-  charPad: 16,                                // 화면 가장자리 ↔ 캐릭터 여백 (@3x px)
-  bubble: { w: 128, h: 130, y: 117, x: 162 }, // 캐릭터(24~142px)와 가로 26px 띄움
+  w: 294, h: 257,
+  char: { w: 118, h: 138 },
+  charPad: 16,
+  bubble: { w: 150, h: 140, y: 117, x: 144 },
 };
 export const CELL02 = {
-  w: 290, h: 113,
+  w: 294, h: 140,
   char: null,
-  bubble: { w: 128, h: 113, y: 0, x: 162 },   // 01 과 같은 x 오프셋 → 정렬 일치
+  bubble: { w: 150, h: 140, y: 0, x: 144 },   // 01 과 완전히 같은 크기 → 화질 일치
 };
 
-/* ★ 두 숫자의 순서는 (capLeft, capTop) 이다. (capTop, capLeft) 가 아니다! ★
-     20 = 왼쪽 고정(말풍선 안), 60 = 위쪽 고정(캐릭터 전체를 덮음)
-   순서를 반대로 넣으면 늘어나는 기준선이 캐릭터를 관통해서
-   답장처럼 큰 말풍선에서 캐릭터가 늘어난다.
-
-   오른쪽 고정 = 전체가로 - capLeft - 1,  아래쪽 고정 = 전체세로 - capTop - 1
-   이미지 82.7 x 82.3pt, 캐릭터 39 x 46pt, 말풍선 x 40~82.7 / y 39~82.3pt */
+/* 순서는 (capLeft, capTop). insets 는 top left bottom right. 전부 1배수 pt */
 export const CELL_CSS = {
-  //            capLeft  capTop        top  left  bottom right
-  receive01: { cap: '64px 47px', insets: '48px 69px 9px 13px' },  // 꼬리(왼쪽) 안쪽 여백 14pt
-  send01:    { cap: '20px 47px', insets: '48px 13px 9px 69px' },  // 꼬리(오른쪽) 안쪽 여백 14pt
-  receive02: { cap: '64px 18px', insets: '7px 69px 7px 13px' },
-  send02:    { cap: '15px 18px', insets: '7px 13px 7px 69px' },
+  receive01: { cap: '60px 47px', insets: '55px 62px 14px 16px' },
+  send01:    { cap: '20px 47px', insets: '55px 16px 14px 62px' },
+  receive02: { cap: '60px 20px', insets: '15px 62px 15px 16px' },
+  send02:    { cap: '15px 20px', insets: '15px 16px 15px 62px' },
 };
 
-/** 말풍선 원본 (public/bubbles/, 투명 배경 그대로) */
 export const BUBBLE_ART = {
-  tailLeft: 'bubbles/tail-left.png',    // 꼬리 왼쪽 위 → 받은 메시지 첫 줄
-  tailRight: 'bubbles/tail-right.png',  // 꼬리 오른쪽 위 → 보낸 메시지 첫 줄
-  plainA: 'bubbles/plain-a.png',        // 꼬리 없음 → 연속 메시지
+  tailLeft: 'bubbles/tail-left.png',
+  tailRight: 'bubbles/tail-right.png',
+  plainA: 'bubbles/plain-a.png',
   plainB: 'bubbles/plain-b.png',
 };
 
-/**
- * 8장 정의
- *  01 = 다른 시간대 첫 메시지 → 꼬리 O + 캐릭터 O
- *  02 = 같은 시간 연달아 보낸 메시지 → 꼬리 X + 캐릭터 X
- */
 export const BUBBLE_SLOTS = [
   { name: 'chatroomBubbleReceive01', side: 'left', from: 'A', cell: 'CELL01', art: 'tailLeft' },
   { name: 'chatroomBubbleReceive01Selected', side: 'left', from: 'A', cell: 'CELL01', art: 'tailLeft', dim: true },
@@ -125,10 +98,8 @@ export const BUBBLE_SLOTS = [
   { name: 'chatroomBubbleSend02Selected', side: 'right', from: null, cell: 'CELL02', art: 'plainB', dim: true },
 ];
 
-/** 키패드 눌림 효과 */
 export const KEYPAD = { name: 'passcodeKeypadPressed', px: 180 };
 
-/** 테마 메타 (ManifestStyle 블록에 들어간다) */
 export const THEME_META = {
   name: '내 캐릭터 테마',
   version: '1.0',
@@ -137,7 +108,6 @@ export const THEME_META = {
   id: 'com.kakao.talk.theme.mycharacter',
 };
 
-/** 색상 팔레트 */
 export const COLORS = {
   bg: '#FFFFFF',
   text: '#222222',
