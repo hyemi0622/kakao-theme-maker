@@ -189,14 +189,21 @@ export function renderToSlot(src, opt) {
  * 슬롯마다 다시 누끼를 돌리면 느리므로, 마스터를 1회만 만들고 재사용한다.
  */
 export async function buildMaster(file, onProgress) {
-  const cut = await removeBg(file, onProgress);
+  // ★ 누끼 전에 먼저 축소 ★
+  // 아이폰 원본(4000px급)을 그대로 넣으면 iOS Safari 에서
+  // WASM 모델이 메모리 부족으로 실패하고, 그러면 배경이 그대로 남는다.
+  const src = await loadImage(file);
+  const cap = 1024;
+  const s0 = Math.min(1, cap / Math.max(src.width, src.height));
+  const small = makeCanvas(Math.round(src.width * s0), Math.round(src.height * s0));
+  small.getContext('2d').drawImage(src, 0, 0, small.width, small.height);
+  const smallBlob = await toPngBlob(small);
+
+  const cut = await removeBg(smallBlob, onProgress);
   const img = await loadImage(cut);
 
-  // 고해상도 유지 (최대 1024로 제한 — 메모리 보호)
-  const cap = 1024;
-  const s = Math.min(1, cap / Math.max(img.width, img.height));
-  const base = makeCanvas(Math.round(img.width * s), Math.round(img.height * s));
-  base.getContext('2d').drawImage(img, 0, 0, base.width, base.height);
+  const base = makeCanvas(img.width, img.height);
+  base.getContext('2d').drawImage(img, 0, 0);
 
   killWhiteFringe(base);
   return trimTransparent(base);
