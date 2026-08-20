@@ -60,24 +60,36 @@ export const BG_SLOTS = [
    [캐릭터-말풍선 간격]
      간격 = bubble.x - (charPad + char.w) = 144 - (16 + 118) = 10px
      send 쪽은 좌우 반전이라 자동으로 같은 10px 이 적용된다. */
-export const CELL01 = {
+/* 받은 쪽 — 캐릭터 작게 */
+export const CELL01R = {
+  w: 222, h: 227,
+  char: { w: 100, h: 116 },
+  charPad: 6,
+  bubble: { w: 112, h: 110, y: 117, x: 110 },
+};
+export const CELL02R = {
+  w: 222, h: 110, char: null,
+  bubble: { w: 112, h: 110, y: 0, x: 110 },
+};
+
+/* 보낸 쪽 — 캐릭터 원래대로 */
+export const CELL01S = {
   w: 240, h: 227,
   char: { w: 118, h: 138 },
-  charPad: 6,                                   // 16 → 6 (벽 쪽으로 당김)
-  bubble: { w: 112, h: 110, y: 117, x: 128 },   // 138 → 128
+  charPad: 6,
+  bubble: { w: 112, h: 110, y: 117, x: 128 },
 };
-export const CELL02 = {
-  w: 240, h: 110,
-  char: null,
+export const CELL02S = {
+  w: 240, h: 110, char: null,
   bubble: { w: 112, h: 110, y: 0, x: 128 },
 };
 
 /* 순서는 (capLeft, capTop). insets 는 top left bottom right. 전부 1배수 pt */
 export const CELL_CSS = {
   //            capLeft  capTop        top  left  bottom right
-  receive01: { cap: '55px 50px', insets: '48px 57px 10px 11px' },
+  receive01: { cap: '49px 45px', insets: '48px 51px 10px 11px' },
   send01:    { cap: '18px 50px', insets: '48px 11px 10px 57px' },
-  receive02: { cap: '55px 16px', insets: '10px 52px 10px 11px' },
+  receive02: { cap: '49px 16px', insets: '10px 46px 10px 11px' },
   send02:    { cap: '12px 16px', insets: '10px 11px 10px 52px' },
 };
 
@@ -89,14 +101,14 @@ export const BUBBLE_ART = {
 };
 
 export const BUBBLE_SLOTS = [
-  { name: 'chatroomBubbleReceive01', side: 'left', from: 'A', cell: 'CELL01', art: 'tailLeft' },
-  { name: 'chatroomBubbleReceive01Selected', side: 'left', from: 'A', cell: 'CELL01', art: 'tailLeft', dim: true },
-  { name: 'chatroomBubbleReceive02', side: 'left', from: null, cell: 'CELL02', art: 'plainA' },
-  { name: 'chatroomBubbleReceive02Selected', side: 'left', from: null, cell: 'CELL02', art: 'plainA', dim: true },
-  { name: 'chatroomBubbleSend01', side: 'right', from: 'B', cell: 'CELL01', art: 'tailRight' },
-  { name: 'chatroomBubbleSend01Selected', side: 'right', from: 'B', cell: 'CELL01', art: 'tailRight', dim: true },
-  { name: 'chatroomBubbleSend02', side: 'right', from: null, cell: 'CELL02', art: 'plainB' },
-  { name: 'chatroomBubbleSend02Selected', side: 'right', from: null, cell: 'CELL02', art: 'plainB', dim: true },
+  { name: 'chatroomBubbleReceive01', side: 'left', from: 'A', cell: 'CELL01R', art: 'tailLeft' },
+  { name: 'chatroomBubbleReceive01Selected', side: 'left', from: 'A', cell: 'CELL01R', art: 'tailLeft', dim: true },
+  { name: 'chatroomBubbleReceive02', side: 'left', from: null, cell: 'CELL02R', art: 'plainA' },
+  { name: 'chatroomBubbleReceive02Selected', side: 'left', from: null, cell: 'CELL02R', art: 'plainA', dim: true },
+  { name: 'chatroomBubbleSend01', side: 'right', from: 'B', cell: 'CELL01S', art: 'tailRight' },
+  { name: 'chatroomBubbleSend01Selected', side: 'right', from: 'B', cell: 'CELL01S', art: 'tailRight', dim: true },
+  { name: 'chatroomBubbleSend02', side: 'right', from: null, cell: 'CELL02S', art: 'plainB' },
+  { name: 'chatroomBubbleSend02Selected', side: 'right', from: null, cell: 'CELL02S', art: 'plainB', dim: true },
 ];
 
 export const KEYPAD = { name: 'passcodeKeypadPressed', px: 180 };
