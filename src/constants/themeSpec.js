@@ -61,36 +61,37 @@ export const BG_SLOTS = [
      간격 = bubble.x - (charPad + char.w) = 144 - (16 + 118) = 10px
      send 쪽은 좌우 반전이라 자동으로 같은 10px 이 적용된다. */
 /* 받은 쪽 — 캐릭터 작게 */
+/* 받은 쪽 */
 export const CELL01R = {
-  w: 216, h: 227,
+  w: 204, h: 215,
   char: { w: 100, h: 116 },
   charPad: 0,
-  bubble: { w: 112, h: 110, y: 117, x: 104 },
+  bubble: { w: 100, h: 98, y: 117, x: 104 },
 };
 export const CELL02R = {
-  w: 216, h: 110, char: null,
-  bubble: { w: 112, h: 110, y: 0, x: 104 },
+  w: 204, h: 98, char: null,
+  bubble: { w: 100, h: 98, y: 0, x: 104 },
 };
 
-/* 보낸 쪽 — 캐릭터 원래대로 */
+/* 보낸 쪽 */
 export const CELL01S = {
-  w: 240, h: 227,
+  w: 228, h: 215,
   char: { w: 118, h: 138 },
   charPad: 6,
-  bubble: { w: 112, h: 110, y: 117, x: 128 },
+  bubble: { w: 100, h: 98, y: 117, x: 128 },
 };
 export const CELL02S = {
-  w: 240, h: 110, char: null,
-  bubble: { w: 112, h: 110, y: 0, x: 128 },
+  w: 228, h: 98, char: null,
+  bubble: { w: 100, h: 98, y: 0, x: 128 },
 };
 
 /* 순서는 (capLeft, capTop). insets 는 top left bottom right. 전부 1배수 pt */
 export const CELL_CSS = {
   //            capLeft  capTop        top  left  bottom right
-  receive01: { cap: '47px 45px', insets: '48px 49px 10px 11px' },
-  send01:    { cap: '18px 50px', insets: '48px 11px 10px 57px' },
-  receive02: { cap: '47px 16px', insets: '10px 44px 10px 11px' },
-  send02:    { cap: '12px 16px', insets: '10px 11px 10px 52px' },
+  receive01: { cap: '47px 45px', insets: '48px 47px 9px 10px' },
+  send01:    { cap: '18px 50px', insets: '48px 10px 9px 55px' },
+  receive02: { cap: '47px 15px', insets: '9px 42px 9px 10px' },
+  send02:    { cap: '12px 15px', insets: '9px 10px 9px 50px' },
 };
 
 export const BUBBLE_ART = {
