@@ -14,7 +14,7 @@
 import JSZip from 'jszip';
 import {
   SLOTS, FLAT_SLOTS, BG_SLOTS, KEYPAD,
-  BUBBLE_SLOTS, BUBBLE_ART, CELL01, CELL02,
+  BUBBLE_SLOTS, BUBBLE_ART, CELL01R, CELL02R, CELL01S, CELL02S,
 } from '../constants/themeSpec.js';
 import {
   buildMaster, renderToSlot, toPngBlob, loadImage, makeCanvas,
@@ -96,7 +96,7 @@ export async function buildTheme(fileA, fileB, rawStep = () => {}) {
     for (const [k, v] of Object.entries(BUBBLE_ART)) {
       arts[k] = await loadImage(import.meta.env.BASE_URL + v);
     }
-    const CELLS = { CELL01, CELL02 };
+    const CELLS = { CELL01R, CELL02R, CELL01S, CELL02S };
     for (const b of BUBBLE_SLOTS) {
       const L = CELLS[b.cell];
       const c = renderBubbleCell({
