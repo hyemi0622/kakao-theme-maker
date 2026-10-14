@@ -14,7 +14,7 @@
 import JSZip from 'jszip';
 import {
   SLOTS, FLAT_SLOTS, BG_SLOTS, KEYPAD,
-  BUBBLE_SLOTS, BUBBLE_ART, CELL01R, CELL02R, CELL01S, CELL02S,
+  BUBBLE_SLOTS, BUBBLE_ART, scaledCells, cellCss,
 } from '../constants/themeSpec.js';
 import {
   buildMaster, renderToSlot, toPngBlob, loadImage, makeCanvas,
@@ -23,11 +23,25 @@ import { loadDeco, renderBackground } from './deco.js';
 import { buildThemeCss } from './cssTemplate.js';
 import { renderBubbleCell } from './bubbleCell.js';
 
+// 같은 사진으로 캐릭터 크기만 바꿔 다시 만들 때 배경 제거를 건너뛴다
+const masterCache = new WeakMap();
+function cachedMaster(file, onProgress) {
+  if (!masterCache.has(file)) {
+    const job = buildMaster(file, onProgress);
+    job.catch(() => masterCache.delete(file));
+    masterCache.set(file, job);
+  }
+  return masterCache.get(file);
+}
+
 /**
  * @param {File} fileA  왼쪽 / 상대방
  * @param {File} fileB  오른쪽 / 나
+ * @param {{background?: File, charScale?: number}} options
+ *   background  채팅방 배경 사진 (없으면 별 배경)
+ *   charScale   말풍선 옆 캐릭터 크기 배율
  */
-export async function buildTheme(fileA, fileB, rawStep = () => {}) {
+export async function buildTheme(fileA, fileB, rawStep = () => {}, options = {}) {
   // 진행률이 뒤로 가지 않게 (누끼 라이브러리가 단계마다 0부터 다시 세서
   // 5% → 25% → 5% 처럼 튀던 문제)
   let seen = 0;
@@ -35,12 +49,16 @@ export async function buildTheme(fileA, fileB, rawStep = () => {}) {
   const zip = new JSZip();
   const images = zip.folder('Images');
   const manifest = [];
+  const preview = {};   // 화면에 보여줄 캐릭터 말풍선 (@3x)
+  const cells = scaledCells(options.charScale ?? 1);
+  const backgrounds = {};
+  if (options.background) backgrounds.chatroomBgImage = await loadImage(options.background);
 
   /* ── 1. 누끼 ── */
   onStep('왼쪽 캐릭터 배경 제거 중…', 0.05);
-  const masterA = await buildMaster(fileA, (_, p) => onStep('왼쪽 캐릭터 배경 제거 중…', 0.05 + p * 0.2));
+  const masterA = await cachedMaster(fileA, (_, p) => onStep('왼쪽 캐릭터 배경 제거 중…', 0.05 + p * 0.2));
   onStep('오른쪽 캐릭터 배경 제거 중…', 0.28);
-  const masterB = await buildMaster(fileB, (_, p) => onStep('오른쪽 캐릭터 배경 제거 중…', 0.28 + p * 0.2));
+  const masterB = await cachedMaster(fileB, (_, p) => onStep('오른쪽 캐릭터 배경 제거 중…', 0.28 + p * 0.2));
   const masters = { A: masterA, B: masterB };
 
   const pickSrc = async (from) =>
@@ -71,6 +89,7 @@ export async function buildTheme(fileA, fileB, rawStep = () => {}) {
   for (const bg of BG_SLOTS) {
     const canvas = await renderBackground({
       w: bg.w, h: bg.h, density: bg.stars ? 1 : 0,   // 별은 채팅방에만
+      image: backgrounds[bg.name],
     });
     const name = `${bg.name}@3x.png`;
     images.file(name, await toPngBlob(canvas));
@@ -96,7 +115,7 @@ export async function buildTheme(fileA, fileB, rawStep = () => {}) {
     for (const [k, v] of Object.entries(BUBBLE_ART)) {
       arts[k] = await loadImage(import.meta.env.BASE_URL + v);
     }
-    const CELLS = { CELL01R, CELL02R, CELL01S, CELL02S };
+    const CELLS = cells;
     for (const b of BUBBLE_SLOTS) {
       const L = CELLS[b.cell];
       const c = renderBubbleCell({
@@ -114,12 +133,14 @@ export async function buildTheme(fileA, fileB, rawStep = () => {}) {
       const name = `${b.name}@3x.png`;
       images.file(name, await toPngBlob(c));
       manifest.push(`Images/${name} (${L.w}x${L.h})`);
+      if (b.name === 'chatroomBubbleReceive01') preview.you = URL.createObjectURL(await toPngBlob(c));
+      if (b.name === 'chatroomBubbleSend01') preview.me = URL.createObjectURL(await toPngBlob(c));
     }
   }
 
   /* ── 7. CSS ── */
   onStep('CSS 작성 중…', 0.92);
-  zip.file('KakaoTalkTheme.css', buildThemeCss());
+  zip.file('KakaoTalkTheme.css', buildThemeCss({ cells: cellCss(cells) }));
   manifest.unshift('KakaoTalkTheme.css');
 
   /* ── 8. 패킹 ──
@@ -132,7 +153,7 @@ export async function buildTheme(fileA, fileB, rawStep = () => {}) {
   const blob = new Blob([buf], { type: 'application/octet-stream' });
 
   onStep('완료!', 1);
-  return { blob, manifest };
+  return { blob, preview, manifest };
 }
 
 /* ══════════════════════════════════════════════════════════

@@ -20,7 +20,7 @@ import { THEME_META, COLORS, CELL_CSS } from '../constants/themeSpec.js';
 export function buildThemeCss(opt = {}) {
   const m = { ...THEME_META, ...opt.meta };
   const c = { ...COLORS, ...opt.colors };
-  const S = CELL_CSS;
+  const S = opt.cells ?? CELL_CSS;
 
   return `/*
  Manifest
@@ -183,7 +183,7 @@ MessageCellStyle-Send
 
     -ios-text-color: ${c.text};
     -ios-selected-text-color: ${c.text};
-    -ios-unread-text-color: ${c.sub};
+    -ios-unread-text-color: ${c.unread};
 }
 
 MessageCellStyle-Receive
@@ -199,7 +199,7 @@ MessageCellStyle-Receive
 
     -ios-text-color: ${c.text};
     -ios-selected-text-color: ${c.text};
-    -ios-unread-text-color: ${c.sub};
+    -ios-unread-text-color: ${c.unread};
 }
 
 

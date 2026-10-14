@@ -41,20 +41,20 @@ export async function loadStarBg() {
  * 직접 만든 별 배경 PNG 를 기기 비율에 맞게 cover 로 채워 넣는다.
  * @param {number} density 0 이면 별 없이 흰 배경만 (탭바 배경 등)
  */
-export async function renderBackground({ w, h, density = 1, bgColor = '#FFFFFF' }) {
+export async function renderBackground({ w, h, density = 1, bgColor = '#FFFFFF', image = null }) {
   const c = makeCanvas(w, h);
   const ctx = c.getContext('2d');
   ctx.fillStyle = bgColor;
   ctx.fillRect(0, 0, w, h);
-  if (density <= 0) return c;
+  if (!image && density <= 0) return c;
 
-  const img = await loadStarBg();
+  const img = image || await loadStarBg();
   // cover: 비율 유지하며 캔버스를 꽉 채움 (별이 절대 찌그러지지 않음)
   const s = Math.max(w / img.width, h / img.height);
   const dw = img.width * s;
   const dh = img.height * s;
-  ctx.globalAlpha = Math.min(1, density);
-  ctx.drawImage(img, (w - dw) / 2, 0, dw, dh);
+  ctx.globalAlpha = image ? 1 : Math.min(1, density);
+  ctx.drawImage(img, (w - dw) / 2, image ? (h - dh) / 2 : 0, dw, dh);
   ctx.globalAlpha = 1;
   return c;
 }

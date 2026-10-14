@@ -85,6 +85,56 @@ export const CELL02S = {
   bubble: { w: 100, h: 98, y: 0, x: 126 },
 };
 
+/** 캐릭터와 말풍선 사이 가로 간격 (@3x px) */
+export const CHAR_GAP = 2;
+export const CHAR_SCALE = { min: 0.6, max: 1.5, step: 0.05 };
+
+/**
+ * 캐릭터 크기 배율에 맞춘 말풍선 칸.
+ * 캐릭터 박스와 말풍선 시작 높이만 배율만큼 바뀌고, 말풍선 크기와 간격은 그대로.
+ * 02(캐릭터 없는) 칸도 01 과 말풍선 위치를 맞춰야 연속 메시지가 한 줄로 정렬된다.
+ */
+export function scaledCells(scale = 1) {
+  const cell = (base, plain) => {
+    const char = { w: Math.round(base.char.w * scale), h: Math.round(base.char.h * scale) };
+    const x = (base.charPad ?? 0) + char.w + CHAR_GAP;
+    const y = Math.round(base.bubble.y * scale);
+    const bubble = { ...base.bubble, x, y };
+    return [
+      { ...base, w: x + bubble.w, h: y + bubble.h, char, bubble },
+      { ...plain, w: x + bubble.w, bubble: { ...plain.bubble, x } },
+    ];
+  };
+  const [CELL01R_, CELL02R_] = cell(CELL01R, CELL02R);
+  const [CELL01S_, CELL02S_] = cell(CELL01S, CELL02S);
+  return { CELL01R: CELL01R_, CELL02R: CELL02R_, CELL01S: CELL01S_, CELL02S: CELL02S_ };
+}
+
+/**
+ * 칸 배치에서 CSS 늘어나는 지점(cap)과 글자 영역(insets)을 계산. 단위 @3x px → pt.
+ * 말풍선 위치 기준 오프셋은 기본 CELL_CSS 값에서 그대로 가져왔다.
+ * 보낸 쪽 01 은 캐릭터가 더 커서, 늘어나는 줄이 캐릭터 아래로 내려가도록 막는다.
+ */
+export function cellCss(cells) {
+  const pt = (v) => `${Math.round(v / 3)}px`;
+  const left = (L, capTop, insetLeft) => {
+    const { x, y } = L.bubble;
+    return { cap: `${pt(x + 36)} ${pt(capTop)}`, insets: `${pt(y + 27)} ${pt(x + insetLeft)} ${pt(27)} ${pt(30)}` };
+  };
+  const right = (L, capLeft, capTop, insetRight) => {
+    const { x, y, w } = L.bubble;
+    const bx = L.w - w - x;
+    return { cap: `${pt(bx + capLeft)} ${pt(capTop)}`, insets: `${pt(y + 27)} ${pt(30)} ${pt(27)} ${pt(x + insetRight)}` };
+  };
+  const { CELL01R: r1, CELL02R: r2, CELL01S: s1, CELL02S: s2 } = cells;
+  return {
+    receive01: left(r1, r1.bubble.y + 18, 36),
+    send01: right(s1, 54, Math.max(s1.bubble.y + 36, s1.char.h + 6), 36),
+    receive02: left(r2, r2.bubble.y + 45, 21),
+    send02: right(s2, 36, s2.bubble.y + 45, 21),
+  };
+}
+
 /* 순서는 (capLeft, capTop). insets 는 top left bottom right. 전부 1배수 pt */
 export const CELL_CSS = {
   //            capLeft  capTop        top  left  bottom right
@@ -127,4 +177,5 @@ export const COLORS = {
   text: '#222222',
   sub: '#666666',
   accent: '#7B93C6',
+  unread: '#FEE500',   // 안읽음 숫자 (잘 보이게 노란색)
 };
