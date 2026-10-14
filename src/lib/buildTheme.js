@@ -17,29 +17,19 @@ import {
   BUBBLE_SLOTS, BUBBLE_ART, scaledCells, cellCss,
 } from '../constants/themeSpec.js';
 import {
-  buildMaster, renderToSlot, toPngBlob, loadImage, makeCanvas,
+  renderToSlot, toPngBlob, loadImage, makeCanvas,
 } from './imageProcess.js';
 import { loadDeco, renderBackground } from './deco.js';
 import { buildThemeCss } from './cssTemplate.js';
 import { renderBubbleCell } from './bubbleCell.js';
-
-// 같은 사진으로 캐릭터 크기만 바꿔 다시 만들 때 배경 제거를 건너뛴다
-const masterCache = new WeakMap();
-function cachedMaster(file, onProgress) {
-  if (!masterCache.has(file)) {
-    const job = buildMaster(file, onProgress);
-    job.catch(() => masterCache.delete(file));
-    masterCache.set(file, job);
-  }
-  return masterCache.get(file);
-}
+import { cachedMaster } from './charPreview.js';
 
 /**
  * @param {File} fileA  왼쪽 / 상대방
  * @param {File} fileB  오른쪽 / 나
- * @param {{background?: File, charScale?: number}} options
- *   background  채팅방 배경 사진 (없으면 별 배경)
- *   charScale   말풍선 옆 캐릭터 크기 배율
+ * @param {{background?: File, left?: {scale:number,gap:number}, right?: {scale:number,gap:number}}} options
+ *   background   채팅방 배경 사진 (없으면 별 배경)
+ *   left/right   받은/보낸 말풍선 옆 캐릭터 크기 배율과 간격 (@3x px)
  */
 export async function buildTheme(fileA, fileB, rawStep = () => {}, options = {}) {
   // 진행률이 뒤로 가지 않게 (누끼 라이브러리가 단계마다 0부터 다시 세서
@@ -49,8 +39,7 @@ export async function buildTheme(fileA, fileB, rawStep = () => {}, options = {})
   const zip = new JSZip();
   const images = zip.folder('Images');
   const manifest = [];
-  const preview = {};   // 화면에 보여줄 캐릭터 말풍선 (@3x)
-  const cells = scaledCells(options.charScale ?? 1);
+  const cells = scaledCells(options.left, options.right);
   const backgrounds = {};
   if (options.background) backgrounds.chatroomBgImage = await loadImage(options.background);
 
@@ -133,8 +122,6 @@ export async function buildTheme(fileA, fileB, rawStep = () => {}, options = {})
       const name = `${b.name}@3x.png`;
       images.file(name, await toPngBlob(c));
       manifest.push(`Images/${name} (${L.w}x${L.h})`);
-      if (b.name === 'chatroomBubbleReceive01') preview.you = URL.createObjectURL(await toPngBlob(c));
-      if (b.name === 'chatroomBubbleSend01') preview.me = URL.createObjectURL(await toPngBlob(c));
     }
   }
 
@@ -153,7 +140,7 @@ export async function buildTheme(fileA, fileB, rawStep = () => {}, options = {})
   const blob = new Blob([buf], { type: 'application/octet-stream' });
 
   onStep('완료!', 1);
-  return { blob, preview, manifest };
+  return { blob, manifest };
 }
 
 /* ══════════════════════════════════════════════════════════
